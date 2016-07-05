@@ -1,0 +1,14 @@
+{
+	"name": "Series GSE5325",
+	"title": "Application of Principal Component Analysis to Genetics",
+	"resources": [
+		"./GSE5325.matrix",
+		"./GSE5325.tsv"
+	],
+	"image": "thumbnail.png",
+	"readme": "README.md",
+	"sources": [{
+	  "name": "NCBI",
+	  "web": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE5325"
+	}]
+}
