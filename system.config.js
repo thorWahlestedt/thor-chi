@@ -86,6 +86,7 @@ System.config({
     "lodash": "npm:lodash@3.10.1",
     "md": "github:guybedford/system-md@0.1.0",
     "mime-lookup": "npm:mime-lookup@0.0.2",
+    "ml-matrix": "npm:ml-matrix@1.1.5",
     "ml-pca": "npm:ml-pca@1.1.1",
     "model-js": "npm:model-js@0.2.5",
     "pivottable": "npm:pivottable@2.0.2",

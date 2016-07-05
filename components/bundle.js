@@ -25194,6 +25194,1102 @@ System.register('components/examples/index.js', ['common/styles/index.css!'], fu
     }
   };
 });
+System.registerDynamic("npm:ml-stat@1.2.0/array.js", [], true, function($__require, exports, module) {
+  "use strict";
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  function compareNumbers(a, b) {
+    return a - b;
+  }
+  exports.sum = function sum(values) {
+    var sum = 0;
+    for (var i = 0; i < values.length; i++) {
+      sum += values[i];
+    }
+    return sum;
+  };
+  exports.max = function max(values) {
+    var max = values[0];
+    var l = values.length;
+    for (var i = 1; i < l; i++) {
+      if (values[i] > max)
+        max = values[i];
+    }
+    return max;
+  };
+  exports.min = function min(values) {
+    var min = values[0];
+    var l = values.length;
+    for (var i = 1; i < l; i++) {
+      if (values[i] < min)
+        min = values[i];
+    }
+    return min;
+  };
+  exports.minMax = function minMax(values) {
+    var min = values[0];
+    var max = values[0];
+    var l = values.length;
+    for (var i = 1; i < l; i++) {
+      if (values[i] < min)
+        min = values[i];
+      if (values[i] > max)
+        max = values[i];
+    }
+    return {
+      min: min,
+      max: max
+    };
+  };
+  exports.arithmeticMean = function arithmeticMean(values) {
+    var sum = 0;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      sum += values[i];
+    }
+    return sum / l;
+  };
+  exports.mean = exports.arithmeticMean;
+  exports.geometricMean = function geometricMean(values) {
+    var mul = 1;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      mul *= values[i];
+    }
+    return Math.pow(mul, 1 / l);
+  };
+  exports.logMean = function logMean(values) {
+    var lnsum = 0;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      lnsum += Math.log(values[i]);
+    }
+    return lnsum / l;
+  };
+  exports.grandMean = function grandMean(means, samples) {
+    var sum = 0;
+    var n = 0;
+    var l = means.length;
+    for (var i = 0; i < l; i++) {
+      sum += samples[i] * means[i];
+      n += samples[i];
+    }
+    return sum / n;
+  };
+  exports.truncatedMean = function truncatedMean(values, percent, alreadySorted) {
+    if (alreadySorted === undefined)
+      alreadySorted = false;
+    if (!alreadySorted) {
+      values = [].concat(values).sort(compareNumbers);
+    }
+    var l = values.length;
+    var k = Math.floor(l * percent);
+    var sum = 0;
+    for (var i = k; i < (l - k); i++) {
+      sum += values[i];
+    }
+    return sum / (l - 2 * k);
+  };
+  exports.harmonicMean = function harmonicMean(values) {
+    var sum = 0;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      if (values[i] === 0) {
+        throw new RangeError('value at index ' + i + 'is zero');
+      }
+      sum += 1 / values[i];
+    }
+    return l / sum;
+  };
+  exports.contraHarmonicMean = function contraHarmonicMean(values) {
+    var r1 = 0;
+    var r2 = 0;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      r1 += values[i] * values[i];
+      r2 += values[i];
+    }
+    if (r2 < 0) {
+      throw new RangeError('sum of values is negative');
+    }
+    return r1 / r2;
+  };
+  exports.median = function median(values, alreadySorted) {
+    if (alreadySorted === undefined)
+      alreadySorted = false;
+    if (!alreadySorted) {
+      values = [].concat(values).sort(compareNumbers);
+    }
+    var l = values.length;
+    var half = Math.floor(l / 2);
+    if (l % 2 === 0) {
+      return (values[half - 1] + values[half]) * 0.5;
+    } else {
+      return values[half];
+    }
+  };
+  exports.variance = function variance(values, unbiased) {
+    if (unbiased === undefined)
+      unbiased = true;
+    var theMean = exports.mean(values);
+    var theVariance = 0;
+    var l = values.length;
+    for (var i = 0; i < l; i++) {
+      var x = values[i] - theMean;
+      theVariance += x * x;
+    }
+    if (unbiased) {
+      return theVariance / (l - 1);
+    } else {
+      return theVariance / l;
+    }
+  };
+  exports.standardDeviation = function standardDeviation(values, unbiased) {
+    return Math.sqrt(exports.variance(values, unbiased));
+  };
+  exports.standardError = function standardError(values) {
+    return exports.standardDeviation(values) / Math.sqrt(values.length);
+  };
+  exports.robustMeanAndStdev = function robustMeanAndStdev(y) {
+    var mean = 0,
+        stdev = 0;
+    var length = y.length,
+        i = 0;
+    for (i = 0; i < length; i++) {
+      mean += y[i];
+    }
+    mean /= length;
+    var averageDeviations = new Array(length);
+    for (i = 0; i < length; i++)
+      averageDeviations[i] = Math.abs(y[i] - mean);
+    averageDeviations.sort(compareNumbers);
+    if (length % 2 == 1) {
+      stdev = averageDeviations[(length - 1) / 2] / 0.6745;
+    } else {
+      stdev = 0.5 * (averageDeviations[length / 2] + averageDeviations[length / 2 - 1]) / 0.6745;
+    }
+    return {
+      mean,
+      stdev
+    };
+  };
+  exports.quartiles = function quartiles(values, alreadySorted) {
+    if (typeof(alreadySorted) === 'undefined')
+      alreadySorted = false;
+    if (!alreadySorted) {
+      values = [].concat(values).sort(compareNumbers);
+    }
+    var quart = values.length / 4;
+    var q1 = values[Math.ceil(quart) - 1];
+    var q2 = exports.median(values, true);
+    var q3 = values[Math.ceil(quart * 3) - 1];
+    return {
+      q1: q1,
+      q2: q2,
+      q3: q3
+    };
+  };
+  exports.pooledStandardDeviation = function pooledStandardDeviation(samples, unbiased) {
+    return Math.sqrt(exports.pooledVariance(samples, unbiased));
+  };
+  exports.pooledVariance = function pooledVariance(samples, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var sum = 0;
+    var length = 0,
+        l = samples.length;
+    for (var i = 0; i < l; i++) {
+      var values = samples[i];
+      var vari = exports.variance(values);
+      sum += (values.length - 1) * vari;
+      if (unbiased)
+        length += values.length - 1;
+      else
+        length += values.length;
+    }
+    return sum / length;
+  };
+  exports.mode = function mode(values) {
+    var l = values.length,
+        itemCount = new Array(l),
+        i;
+    for (i = 0; i < l; i++) {
+      itemCount[i] = 0;
+    }
+    var itemArray = new Array(l);
+    var count = 0;
+    for (i = 0; i < l; i++) {
+      var index = itemArray.indexOf(values[i]);
+      if (index >= 0)
+        itemCount[index]++;
+      else {
+        itemArray[count] = values[i];
+        itemCount[count] = 1;
+        count++;
+      }
+    }
+    var maxValue = 0,
+        maxIndex = 0;
+    for (i = 0; i < count; i++) {
+      if (itemCount[i] > maxValue) {
+        maxValue = itemCount[i];
+        maxIndex = i;
+      }
+    }
+    return itemArray[maxIndex];
+  };
+  exports.covariance = function covariance(vector1, vector2, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var mean1 = exports.mean(vector1);
+    var mean2 = exports.mean(vector2);
+    if (vector1.length !== vector2.length)
+      throw "Vectors do not have the same dimensions";
+    var cov = 0,
+        l = vector1.length;
+    for (var i = 0; i < l; i++) {
+      var x = vector1[i] - mean1;
+      var y = vector2[i] - mean2;
+      cov += x * y;
+    }
+    if (unbiased)
+      return cov / (l - 1);
+    else
+      return cov / l;
+  };
+  exports.skewness = function skewness(values, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var theMean = exports.mean(values);
+    var s2 = 0,
+        s3 = 0,
+        l = values.length;
+    for (var i = 0; i < l; i++) {
+      var dev = values[i] - theMean;
+      s2 += dev * dev;
+      s3 += dev * dev * dev;
+    }
+    var m2 = s2 / l;
+    var m3 = s3 / l;
+    var g = m3 / (Math.pow(m2, 3 / 2.0));
+    if (unbiased) {
+      var a = Math.sqrt(l * (l - 1));
+      var b = l - 2;
+      return (a / b) * g;
+    } else {
+      return g;
+    }
+  };
+  exports.kurtosis = function kurtosis(values, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var theMean = exports.mean(values);
+    var n = values.length,
+        s2 = 0,
+        s4 = 0;
+    for (var i = 0; i < n; i++) {
+      var dev = values[i] - theMean;
+      s2 += dev * dev;
+      s4 += dev * dev * dev * dev;
+    }
+    var m2 = s2 / n;
+    var m4 = s4 / n;
+    if (unbiased) {
+      var v = s2 / (n - 1);
+      var a = (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3));
+      var b = s4 / (v * v);
+      var c = ((n - 1) * (n - 1)) / ((n - 2) * (n - 3));
+      return a * b - 3 * c;
+    } else {
+      return m4 / (m2 * m2) - 3;
+    }
+  };
+  exports.entropy = function entropy(values, eps) {
+    if (typeof(eps) === 'undefined')
+      eps = 0;
+    var sum = 0,
+        l = values.length;
+    for (var i = 0; i < l; i++)
+      sum += values[i] * Math.log(values[i] + eps);
+    return -sum;
+  };
+  exports.weightedMean = function weightedMean(values, weights) {
+    var sum = 0,
+        l = values.length;
+    for (var i = 0; i < l; i++)
+      sum += values[i] * weights[i];
+    return sum;
+  };
+  exports.weightedStandardDeviation = function weightedStandardDeviation(values, weights) {
+    return Math.sqrt(exports.weightedVariance(values, weights));
+  };
+  exports.weightedVariance = function weightedVariance(values, weights) {
+    var theMean = exports.weightedMean(values, weights);
+    var vari = 0,
+        l = values.length;
+    var a = 0,
+        b = 0;
+    for (var i = 0; i < l; i++) {
+      var z = values[i] - theMean;
+      var w = weights[i];
+      vari += w * (z * z);
+      b += w;
+      a += w * w;
+    }
+    return vari * (b / (b * b - a));
+  };
+  exports.center = function center(values, inPlace) {
+    if (typeof(inPlace) === 'undefined')
+      inPlace = false;
+    var result = values;
+    if (!inPlace)
+      result = [].concat(values);
+    var theMean = exports.mean(result),
+        l = result.length;
+    for (var i = 0; i < l; i++)
+      result[i] -= theMean;
+  };
+  exports.standardize = function standardize(values, standardDev, inPlace) {
+    if (typeof(standardDev) === 'undefined')
+      standardDev = exports.standardDeviation(values);
+    if (typeof(inPlace) === 'undefined')
+      inPlace = false;
+    var l = values.length;
+    var result = inPlace ? values : new Array(l);
+    for (var i = 0; i < l; i++)
+      result[i] = values[i] / standardDev;
+    return result;
+  };
+  exports.cumulativeSum = function cumulativeSum(array) {
+    var l = array.length;
+    var result = new Array(l);
+    result[0] = array[0];
+    for (var i = 1; i < l; i++)
+      result[i] = result[i - 1] + array[i];
+    return result;
+  };
+  return module.exports;
+});
+
+System.registerDynamic("npm:ml-stat@1.2.0/matrix.js", ["./array"], true, function($__require, exports, module) {
+  "use strict";
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  var arrayStat = $__require('./array');
+  function compareNumbers(a, b) {
+    return a - b;
+  }
+  exports.max = function max(matrix) {
+    var max = -Infinity;
+    for (var i = 0; i < matrix.length; i++) {
+      for (var j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] > max)
+          max = matrix[i][j];
+      }
+    }
+    return max;
+  };
+  exports.min = function min(matrix) {
+    var min = Infinity;
+    for (var i = 0; i < matrix.length; i++) {
+      for (var j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] < min)
+          min = matrix[i][j];
+      }
+    }
+    return min;
+  };
+  exports.minMax = function minMax(matrix) {
+    var min = Infinity;
+    var max = -Infinity;
+    for (var i = 0; i < matrix.length; i++) {
+      for (var j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] < min)
+          min = matrix[i][j];
+        if (matrix[i][j] > max)
+          max = matrix[i][j];
+      }
+    }
+    return {
+      min,
+      max
+    };
+  };
+  exports.entropy = function entropy(matrix, eps) {
+    if (typeof(eps) === 'undefined') {
+      eps = 0;
+    }
+    var sum = 0,
+        l1 = matrix.length,
+        l2 = matrix[0].length;
+    for (var i = 0; i < l1; i++) {
+      for (var j = 0; j < l2; j++) {
+        sum += matrix[i][j] * Math.log(matrix[i][j] + eps);
+      }
+    }
+    return -sum;
+  };
+  exports.mean = function mean(matrix, dimension) {
+    if (typeof(dimension) === 'undefined') {
+      dimension = 0;
+    }
+    var rows = matrix.length,
+        cols = matrix[0].length,
+        theMean,
+        N,
+        i,
+        j;
+    if (dimension === -1) {
+      theMean = [0];
+      N = rows * cols;
+      for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+          theMean[0] += matrix[i][j];
+        }
+      }
+      theMean[0] /= N;
+    } else if (dimension === 0) {
+      theMean = new Array(cols);
+      N = rows;
+      for (j = 0; j < cols; j++) {
+        theMean[j] = 0;
+        for (i = 0; i < rows; i++) {
+          theMean[j] += matrix[i][j];
+        }
+        theMean[j] /= N;
+      }
+    } else if (dimension === 1) {
+      theMean = new Array(rows);
+      N = cols;
+      for (j = 0; j < rows; j++) {
+        theMean[j] = 0;
+        for (i = 0; i < cols; i++) {
+          theMean[j] += matrix[j][i];
+        }
+        theMean[j] /= N;
+      }
+    } else {
+      throw new Error('Invalid dimension');
+    }
+    return theMean;
+  };
+  exports.standardDeviation = function standardDeviation(matrix, means, unbiased) {
+    var vari = exports.variance(matrix, means, unbiased),
+        l = vari.length;
+    for (var i = 0; i < l; i++) {
+      vari[i] = Math.sqrt(vari[i]);
+    }
+    return vari;
+  };
+  exports.variance = function variance(matrix, means, unbiased) {
+    if (typeof(unbiased) === 'undefined') {
+      unbiased = true;
+    }
+    means = means || exports.mean(matrix);
+    var rows = matrix.length;
+    if (rows === 0)
+      return [];
+    var cols = matrix[0].length;
+    var vari = new Array(cols);
+    for (var j = 0; j < cols; j++) {
+      var sum1 = 0,
+          sum2 = 0,
+          x = 0;
+      for (var i = 0; i < rows; i++) {
+        x = matrix[i][j] - means[j];
+        sum1 += x;
+        sum2 += x * x;
+      }
+      if (unbiased) {
+        vari[j] = (sum2 - ((sum1 * sum1) / rows)) / (rows - 1);
+      } else {
+        vari[j] = (sum2 - ((sum1 * sum1) / rows)) / rows;
+      }
+    }
+    return vari;
+  };
+  exports.median = function median(matrix) {
+    var rows = matrix.length,
+        cols = matrix[0].length;
+    var medians = new Array(cols);
+    for (var i = 0; i < cols; i++) {
+      var data = new Array(rows);
+      for (var j = 0; j < rows; j++) {
+        data[j] = matrix[j][i];
+      }
+      data.sort(compareNumbers);
+      var N = data.length;
+      if (N % 2 === 0) {
+        medians[i] = (data[N / 2] + data[(N / 2) - 1]) * 0.5;
+      } else {
+        medians[i] = data[Math.floor(N / 2)];
+      }
+    }
+    return medians;
+  };
+  exports.mode = function mode(matrix) {
+    var rows = matrix.length,
+        cols = matrix[0].length,
+        modes = new Array(cols),
+        i,
+        j;
+    for (i = 0; i < cols; i++) {
+      var itemCount = new Array(rows);
+      for (var k = 0; k < rows; k++) {
+        itemCount[k] = 0;
+      }
+      var itemArray = new Array(rows);
+      var count = 0;
+      for (j = 0; j < rows; j++) {
+        var index = itemArray.indexOf(matrix[j][i]);
+        if (index >= 0) {
+          itemCount[index]++;
+        } else {
+          itemArray[count] = matrix[j][i];
+          itemCount[count] = 1;
+          count++;
+        }
+      }
+      var maxValue = 0,
+          maxIndex = 0;
+      for (j = 0; j < count; j++) {
+        if (itemCount[j] > maxValue) {
+          maxValue = itemCount[j];
+          maxIndex = j;
+        }
+      }
+      modes[i] = itemArray[maxIndex];
+    }
+    return modes;
+  };
+  exports.skewness = function skewness(matrix, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var means = exports.mean(matrix);
+    var n = matrix.length,
+        l = means.length;
+    var skew = new Array(l);
+    for (var j = 0; j < l; j++) {
+      var s2 = 0,
+          s3 = 0;
+      for (var i = 0; i < n; i++) {
+        var dev = matrix[i][j] - means[j];
+        s2 += dev * dev;
+        s3 += dev * dev * dev;
+      }
+      var m2 = s2 / n;
+      var m3 = s3 / n;
+      var g = m3 / Math.pow(m2, 3 / 2);
+      if (unbiased) {
+        var a = Math.sqrt(n * (n - 1));
+        var b = n - 2;
+        skew[j] = (a / b) * g;
+      } else {
+        skew[j] = g;
+      }
+    }
+    return skew;
+  };
+  exports.kurtosis = function kurtosis(matrix, unbiased) {
+    if (typeof(unbiased) === 'undefined')
+      unbiased = true;
+    var means = exports.mean(matrix);
+    var n = matrix.length,
+        m = matrix[0].length;
+    var kurt = new Array(m);
+    for (var j = 0; j < m; j++) {
+      var s2 = 0,
+          s4 = 0;
+      for (var i = 0; i < n; i++) {
+        var dev = matrix[i][j] - means[j];
+        s2 += dev * dev;
+        s4 += dev * dev * dev * dev;
+      }
+      var m2 = s2 / n;
+      var m4 = s4 / n;
+      if (unbiased) {
+        var v = s2 / (n - 1);
+        var a = (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3));
+        var b = s4 / (v * v);
+        var c = ((n - 1) * (n - 1)) / ((n - 2) * (n - 3));
+        kurt[j] = a * b - 3 * c;
+      } else {
+        kurt[j] = m4 / (m2 * m2) - 3;
+      }
+    }
+    return kurt;
+  };
+  exports.standardError = function standardError(matrix) {
+    var samples = matrix.length;
+    var standardDeviations = exports.standardDeviation(matrix);
+    var l = standardDeviations.length;
+    var standardErrors = new Array(l);
+    var sqrtN = Math.sqrt(samples);
+    for (var i = 0; i < l; i++) {
+      standardErrors[i] = standardDeviations[i] / sqrtN;
+    }
+    return standardErrors;
+  };
+  exports.covariance = function covariance(matrix, dimension) {
+    return exports.scatter(matrix, undefined, dimension);
+  };
+  exports.scatter = function scatter(matrix, divisor, dimension) {
+    if (typeof(dimension) === 'undefined') {
+      dimension = 0;
+    }
+    if (typeof(divisor) === 'undefined') {
+      if (dimension === 0) {
+        divisor = matrix.length - 1;
+      } else if (dimension === 1) {
+        divisor = matrix[0].length - 1;
+      }
+    }
+    var means = exports.mean(matrix, dimension);
+    var rows = matrix.length;
+    if (rows === 0) {
+      return [[]];
+    }
+    var cols = matrix[0].length,
+        cov,
+        i,
+        j,
+        s,
+        k;
+    if (dimension === 0) {
+      cov = new Array(cols);
+      for (i = 0; i < cols; i++) {
+        cov[i] = new Array(cols);
+      }
+      for (i = 0; i < cols; i++) {
+        for (j = i; j < cols; j++) {
+          s = 0;
+          for (k = 0; k < rows; k++) {
+            s += (matrix[k][j] - means[j]) * (matrix[k][i] - means[i]);
+          }
+          s /= divisor;
+          cov[i][j] = s;
+          cov[j][i] = s;
+        }
+      }
+    } else if (dimension === 1) {
+      cov = new Array(rows);
+      for (i = 0; i < rows; i++) {
+        cov[i] = new Array(rows);
+      }
+      for (i = 0; i < rows; i++) {
+        for (j = i; j < rows; j++) {
+          s = 0;
+          for (k = 0; k < cols; k++) {
+            s += (matrix[j][k] - means[j]) * (matrix[i][k] - means[i]);
+          }
+          s /= divisor;
+          cov[i][j] = s;
+          cov[j][i] = s;
+        }
+      }
+    } else {
+      throw new Error('Invalid dimension');
+    }
+    return cov;
+  };
+  exports.correlation = function correlation(matrix) {
+    var means = exports.mean(matrix),
+        standardDeviations = exports.standardDeviation(matrix, true, means),
+        scores = exports.zScores(matrix, means, standardDeviations),
+        rows = matrix.length,
+        cols = matrix[0].length,
+        i,
+        j;
+    var cor = new Array(cols);
+    for (i = 0; i < cols; i++) {
+      cor[i] = new Array(cols);
+    }
+    for (i = 0; i < cols; i++) {
+      for (j = i; j < cols; j++) {
+        var c = 0;
+        for (var k = 0,
+            l = scores.length; k < l; k++) {
+          c += scores[k][j] * scores[k][i];
+        }
+        c /= rows - 1;
+        cor[i][j] = c;
+        cor[j][i] = c;
+      }
+    }
+    return cor;
+  };
+  exports.zScores = function zScores(matrix, means, standardDeviations) {
+    means = means || exports.mean(matrix);
+    if (typeof(standardDeviations) === 'undefined')
+      standardDeviations = exports.standardDeviation(matrix, true, means);
+    return exports.standardize(exports.center(matrix, means, false), standardDeviations, true);
+  };
+  exports.center = function center(matrix, means, inPlace) {
+    means = means || exports.mean(matrix);
+    var result = matrix,
+        l = matrix.length,
+        i,
+        j,
+        jj;
+    if (!inPlace) {
+      result = new Array(l);
+      for (i = 0; i < l; i++) {
+        result[i] = new Array(matrix[i].length);
+      }
+    }
+    for (i = 0; i < l; i++) {
+      var row = result[i];
+      for (j = 0, jj = row.length; j < jj; j++) {
+        row[j] = matrix[i][j] - means[j];
+      }
+    }
+    return result;
+  };
+  exports.standardize = function standardize(matrix, standardDeviations, inPlace) {
+    if (typeof(standardDeviations) === 'undefined')
+      standardDeviations = exports.standardDeviation(matrix);
+    var result = matrix,
+        l = matrix.length,
+        i,
+        j,
+        jj;
+    if (!inPlace) {
+      result = new Array(l);
+      for (i = 0; i < l; i++) {
+        result[i] = new Array(matrix[i].length);
+      }
+    }
+    for (i = 0; i < l; i++) {
+      var resultRow = result[i];
+      var sourceRow = matrix[i];
+      for (j = 0, jj = resultRow.length; j < jj; j++) {
+        if (standardDeviations[j] !== 0 && !isNaN(standardDeviations[j])) {
+          resultRow[j] = sourceRow[j] / standardDeviations[j];
+        }
+      }
+    }
+    return result;
+  };
+  exports.weightedVariance = function weightedVariance(matrix, weights) {
+    var means = exports.mean(matrix);
+    var rows = matrix.length;
+    if (rows === 0)
+      return [];
+    var cols = matrix[0].length;
+    var vari = new Array(cols);
+    for (var j = 0; j < cols; j++) {
+      var sum = 0;
+      var a = 0,
+          b = 0;
+      for (var i = 0; i < rows; i++) {
+        var z = matrix[i][j] - means[j];
+        var w = weights[i];
+        sum += w * (z * z);
+        b += w;
+        a += w * w;
+      }
+      vari[j] = sum * (b / (b * b - a));
+    }
+    return vari;
+  };
+  exports.weightedMean = function weightedMean(matrix, weights, dimension) {
+    if (typeof(dimension) === 'undefined') {
+      dimension = 0;
+    }
+    var rows = matrix.length;
+    if (rows === 0)
+      return [];
+    var cols = matrix[0].length,
+        means,
+        i,
+        ii,
+        j,
+        w,
+        row;
+    if (dimension === 0) {
+      means = new Array(cols);
+      for (i = 0; i < cols; i++) {
+        means[i] = 0;
+      }
+      for (i = 0; i < rows; i++) {
+        row = matrix[i];
+        w = weights[i];
+        for (j = 0; j < cols; j++) {
+          means[j] += row[j] * w;
+        }
+      }
+    } else if (dimension === 1) {
+      means = new Array(rows);
+      for (i = 0; i < rows; i++) {
+        means[i] = 0;
+      }
+      for (j = 0; j < rows; j++) {
+        row = matrix[j];
+        w = weights[j];
+        for (i = 0; i < cols; i++) {
+          means[j] += row[i] * w;
+        }
+      }
+    } else {
+      throw new Error('Invalid dimension');
+    }
+    var weightSum = arrayStat.sum(weights);
+    if (weightSum !== 0) {
+      for (i = 0, ii = means.length; i < ii; i++) {
+        means[i] /= weightSum;
+      }
+    }
+    return means;
+  };
+  exports.weightedCovariance = function weightedCovariance(matrix, weights, means, dimension) {
+    dimension = dimension || 0;
+    means = means || exports.weightedMean(matrix, weights, dimension);
+    var s1 = 0,
+        s2 = 0;
+    for (var i = 0,
+        ii = weights.length; i < ii; i++) {
+      s1 += weights[i];
+      s2 += weights[i] * weights[i];
+    }
+    var factor = s1 / (s1 * s1 - s2);
+    return exports.weightedScatter(matrix, weights, means, factor, dimension);
+  };
+  exports.weightedScatter = function weightedScatter(matrix, weights, means, factor, dimension) {
+    dimension = dimension || 0;
+    means = means || exports.weightedMean(matrix, weights, dimension);
+    if (typeof(factor) === 'undefined') {
+      factor = 1;
+    }
+    var rows = matrix.length;
+    if (rows === 0) {
+      return [[]];
+    }
+    var cols = matrix[0].length,
+        cov,
+        i,
+        j,
+        k,
+        s;
+    if (dimension === 0) {
+      cov = new Array(cols);
+      for (i = 0; i < cols; i++) {
+        cov[i] = new Array(cols);
+      }
+      for (i = 0; i < cols; i++) {
+        for (j = i; j < cols; j++) {
+          s = 0;
+          for (k = 0; k < rows; k++) {
+            s += weights[k] * (matrix[k][j] - means[j]) * (matrix[k][i] - means[i]);
+          }
+          cov[i][j] = s * factor;
+          cov[j][i] = s * factor;
+        }
+      }
+    } else if (dimension === 1) {
+      cov = new Array(rows);
+      for (i = 0; i < rows; i++) {
+        cov[i] = new Array(rows);
+      }
+      for (i = 0; i < rows; i++) {
+        for (j = i; j < rows; j++) {
+          s = 0;
+          for (k = 0; k < cols; k++) {
+            s += weights[k] * (matrix[j][k] - means[j]) * (matrix[i][k] - means[i]);
+          }
+          cov[i][j] = s * factor;
+          cov[j][i] = s * factor;
+        }
+      }
+    } else {
+      throw new Error('Invalid dimension');
+    }
+    return cov;
+  };
+  return module.exports;
+});
+
+System.registerDynamic("npm:ml-stat@1.2.0/index.js", ["./array", "./matrix"], true, function($__require, exports, module) {
+  "use strict";
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  exports.array = $__require('./array');
+  exports.matrix = $__require('./matrix');
+  return module.exports;
+});
+
+System.registerDynamic("npm:ml-stat@1.2.0.js", ["npm:ml-stat@1.2.0/index.js"], true, function($__require, exports, module) {
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  module.exports = $__require('npm:ml-stat@1.2.0/index.js');
+  return module.exports;
+});
+
+System.registerDynamic("npm:ml-pca@1.1.1/src/pca.js", ["ml-matrix", "ml-stat"], true, function($__require, exports, module) {
+  "use strict";
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  const Matrix = $__require('ml-matrix');
+  const EVD = Matrix.DC.EVD;
+  const SVD = Matrix.DC.SVD;
+  const Stat = $__require('ml-stat').matrix;
+  const mean = Stat.mean;
+  const stdev = Stat.standardDeviation;
+  const defaultOptions = {
+    isCovarianceMatrix: false,
+    center: true,
+    scale: false
+  };
+  class PCA {
+    constructor(dataset, options, reload, model) {
+      if (reload) {
+        this.center = model.center;
+        this.scale = model.scale;
+        this.means = model.means;
+        this.stdevs = model.stdevs;
+        this.U = Matrix.checkMatrix(model.U);
+        this.S = model.S;
+        return;
+      }
+      options = Object.assign({}, defaultOptions, options);
+      this.center = false;
+      this.scale = false;
+      this.means = null;
+      this.stdevs = null;
+      if (options.isCovarianceMatrix) {
+        this._computeFromCovarianceMatrix(dataset);
+        return;
+      }
+      var useCovarianceMatrix;
+      if (typeof options.useCovarianceMatrix === 'boolean') {
+        useCovarianceMatrix = options.useCovarianceMatrix;
+      } else {
+        useCovarianceMatrix = dataset.length > dataset[0].length;
+      }
+      if (useCovarianceMatrix) {
+        dataset = this._adjust(dataset, options);
+        const covarianceMatrix = dataset.transpose().mmul(dataset).div(dataset.rows - 1);
+        this._computeFromCovarianceMatrix(covarianceMatrix);
+      } else {
+        dataset = this._adjust(dataset, options);
+        var svd = new SVD(dataset, {
+          computeLeftSingularVectors: false,
+          computeRightSingularVectors: true,
+          autoTranspose: true
+        });
+        this.U = svd.rightSingularVectors;
+        const singularValues = svd.diagonal;
+        const eigenvalues = new Array(singularValues.length);
+        for (var i = 0; i < singularValues.length; i++) {
+          eigenvalues[i] = singularValues[i] * singularValues[i] / (dataset.length - 1);
+        }
+        this.S = eigenvalues;
+      }
+    }
+    static load(model) {
+      if (model.name !== 'PCA')
+        throw new RangeError('Invalid model: ' + model.name);
+      return new PCA(null, null, true, model);
+    }
+    toJSON() {
+      return {
+        name: 'PCA',
+        center: this.center,
+        scale: this.scale,
+        means: this.means,
+        stdevs: this.stdevs,
+        U: this.U,
+        S: this.S
+      };
+    }
+    predict(dataset) {
+      dataset = new Matrix(dataset);
+      if (this.center) {
+        dataset.subRowVector(this.means);
+        if (this.scale) {
+          dataset.divRowVector(this.stdevs);
+        }
+      }
+      return dataset.mmul(this.U);
+    }
+    getExplainedVariance() {
+      var sum = 0;
+      for (var i = 0; i < this.S.length; i++) {
+        sum += this.S[i];
+      }
+      return this.S.map((value) => value / sum);
+    }
+    getCumulativeVariance() {
+      var explained = this.getExplainedVariance();
+      for (var i = 1; i < explained.length; i++) {
+        explained[i] += explained[i - 1];
+      }
+      return explained;
+    }
+    getEigenvectors() {
+      return this.U;
+    }
+    getEigenvalues() {
+      return this.S;
+    }
+    getStandardDeviations() {
+      return this.S.map((x) => Math.sqrt(x));
+    }
+    getLoadings() {
+      return this.U.transpose();
+    }
+    _adjust(dataset, options) {
+      this.center = !!options.center;
+      this.scale = !!options.scale;
+      dataset = new Matrix(dataset);
+      if (this.center) {
+        const means = mean(dataset);
+        const stdevs = this.scale ? stdev(dataset, means, true) : null;
+        this.means = means;
+        dataset.subRowVector(means);
+        if (this.scale) {
+          for (var i = 0; i < stdevs.length; i++) {
+            if (stdevs[i] === 0) {
+              throw new RangeError('Cannot scale the dataset (standard deviation is zero at index ' + i);
+            }
+          }
+          this.stdevs = stdevs;
+          dataset.divRowVector(stdevs);
+        }
+      }
+      return dataset;
+    }
+    _computeFromCovarianceMatrix(dataset) {
+      const evd = new EVD(dataset, {assumeSymmetric: true});
+      this.U = evd.eigenvectorMatrix;
+      for (var i = 0; i < this.U.length; i++) {
+        this.U[i].reverse();
+      }
+      this.S = evd.realEigenvalues.reverse();
+    }
+  }
+  module.exports = PCA;
+  return module.exports;
+});
+
+System.registerDynamic("npm:ml-pca@1.1.1.js", ["npm:ml-pca@1.1.1/src/pca.js"], true, function($__require, exports, module) {
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  module.exports = $__require('npm:ml-pca@1.1.1/src/pca.js');
+  return module.exports;
+});
+
 System.registerDynamic("npm:ml-matrix@1.1.5/src/dc/svd.js", ["../matrix", "./util"], true, function($__require, exports, module) {
   "use strict";
   ;
@@ -27796,1099 +28892,39 @@ System.registerDynamic("npm:ml-matrix@1.1.5.js", ["npm:ml-matrix@1.1.5/src/index
   return module.exports;
 });
 
-System.registerDynamic("npm:ml-stat@1.2.0/array.js", [], true, function($__require, exports, module) {
-  "use strict";
+System.registerDynamic("npm:core-js@1.2.6/library/modules/es6.object.keys.js", ["./$.to-object", "./$.object-sap"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  function compareNumbers(a, b) {
-    return a - b;
-  }
-  exports.sum = function sum(values) {
-    var sum = 0;
-    for (var i = 0; i < values.length; i++) {
-      sum += values[i];
-    }
-    return sum;
-  };
-  exports.max = function max(values) {
-    var max = values[0];
-    var l = values.length;
-    for (var i = 1; i < l; i++) {
-      if (values[i] > max)
-        max = values[i];
-    }
-    return max;
-  };
-  exports.min = function min(values) {
-    var min = values[0];
-    var l = values.length;
-    for (var i = 1; i < l; i++) {
-      if (values[i] < min)
-        min = values[i];
-    }
-    return min;
-  };
-  exports.minMax = function minMax(values) {
-    var min = values[0];
-    var max = values[0];
-    var l = values.length;
-    for (var i = 1; i < l; i++) {
-      if (values[i] < min)
-        min = values[i];
-      if (values[i] > max)
-        max = values[i];
-    }
-    return {
-      min: min,
-      max: max
+  var toObject = $__require('./$.to-object');
+  $__require('./$.object-sap')('keys', function($keys) {
+    return function keys(it) {
+      return $keys(toObject(it));
     };
-  };
-  exports.arithmeticMean = function arithmeticMean(values) {
-    var sum = 0;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      sum += values[i];
-    }
-    return sum / l;
-  };
-  exports.mean = exports.arithmeticMean;
-  exports.geometricMean = function geometricMean(values) {
-    var mul = 1;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      mul *= values[i];
-    }
-    return Math.pow(mul, 1 / l);
-  };
-  exports.logMean = function logMean(values) {
-    var lnsum = 0;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      lnsum += Math.log(values[i]);
-    }
-    return lnsum / l;
-  };
-  exports.grandMean = function grandMean(means, samples) {
-    var sum = 0;
-    var n = 0;
-    var l = means.length;
-    for (var i = 0; i < l; i++) {
-      sum += samples[i] * means[i];
-      n += samples[i];
-    }
-    return sum / n;
-  };
-  exports.truncatedMean = function truncatedMean(values, percent, alreadySorted) {
-    if (alreadySorted === undefined)
-      alreadySorted = false;
-    if (!alreadySorted) {
-      values = [].concat(values).sort(compareNumbers);
-    }
-    var l = values.length;
-    var k = Math.floor(l * percent);
-    var sum = 0;
-    for (var i = k; i < (l - k); i++) {
-      sum += values[i];
-    }
-    return sum / (l - 2 * k);
-  };
-  exports.harmonicMean = function harmonicMean(values) {
-    var sum = 0;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      if (values[i] === 0) {
-        throw new RangeError('value at index ' + i + 'is zero');
-      }
-      sum += 1 / values[i];
-    }
-    return l / sum;
-  };
-  exports.contraHarmonicMean = function contraHarmonicMean(values) {
-    var r1 = 0;
-    var r2 = 0;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      r1 += values[i] * values[i];
-      r2 += values[i];
-    }
-    if (r2 < 0) {
-      throw new RangeError('sum of values is negative');
-    }
-    return r1 / r2;
-  };
-  exports.median = function median(values, alreadySorted) {
-    if (alreadySorted === undefined)
-      alreadySorted = false;
-    if (!alreadySorted) {
-      values = [].concat(values).sort(compareNumbers);
-    }
-    var l = values.length;
-    var half = Math.floor(l / 2);
-    if (l % 2 === 0) {
-      return (values[half - 1] + values[half]) * 0.5;
-    } else {
-      return values[half];
-    }
-  };
-  exports.variance = function variance(values, unbiased) {
-    if (unbiased === undefined)
-      unbiased = true;
-    var theMean = exports.mean(values);
-    var theVariance = 0;
-    var l = values.length;
-    for (var i = 0; i < l; i++) {
-      var x = values[i] - theMean;
-      theVariance += x * x;
-    }
-    if (unbiased) {
-      return theVariance / (l - 1);
-    } else {
-      return theVariance / l;
-    }
-  };
-  exports.standardDeviation = function standardDeviation(values, unbiased) {
-    return Math.sqrt(exports.variance(values, unbiased));
-  };
-  exports.standardError = function standardError(values) {
-    return exports.standardDeviation(values) / Math.sqrt(values.length);
-  };
-  exports.robustMeanAndStdev = function robustMeanAndStdev(y) {
-    var mean = 0,
-        stdev = 0;
-    var length = y.length,
-        i = 0;
-    for (i = 0; i < length; i++) {
-      mean += y[i];
-    }
-    mean /= length;
-    var averageDeviations = new Array(length);
-    for (i = 0; i < length; i++)
-      averageDeviations[i] = Math.abs(y[i] - mean);
-    averageDeviations.sort(compareNumbers);
-    if (length % 2 == 1) {
-      stdev = averageDeviations[(length - 1) / 2] / 0.6745;
-    } else {
-      stdev = 0.5 * (averageDeviations[length / 2] + averageDeviations[length / 2 - 1]) / 0.6745;
-    }
-    return {
-      mean,
-      stdev
-    };
-  };
-  exports.quartiles = function quartiles(values, alreadySorted) {
-    if (typeof(alreadySorted) === 'undefined')
-      alreadySorted = false;
-    if (!alreadySorted) {
-      values = [].concat(values).sort(compareNumbers);
-    }
-    var quart = values.length / 4;
-    var q1 = values[Math.ceil(quart) - 1];
-    var q2 = exports.median(values, true);
-    var q3 = values[Math.ceil(quart * 3) - 1];
-    return {
-      q1: q1,
-      q2: q2,
-      q3: q3
-    };
-  };
-  exports.pooledStandardDeviation = function pooledStandardDeviation(samples, unbiased) {
-    return Math.sqrt(exports.pooledVariance(samples, unbiased));
-  };
-  exports.pooledVariance = function pooledVariance(samples, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var sum = 0;
-    var length = 0,
-        l = samples.length;
-    for (var i = 0; i < l; i++) {
-      var values = samples[i];
-      var vari = exports.variance(values);
-      sum += (values.length - 1) * vari;
-      if (unbiased)
-        length += values.length - 1;
-      else
-        length += values.length;
-    }
-    return sum / length;
-  };
-  exports.mode = function mode(values) {
-    var l = values.length,
-        itemCount = new Array(l),
-        i;
-    for (i = 0; i < l; i++) {
-      itemCount[i] = 0;
-    }
-    var itemArray = new Array(l);
-    var count = 0;
-    for (i = 0; i < l; i++) {
-      var index = itemArray.indexOf(values[i]);
-      if (index >= 0)
-        itemCount[index]++;
-      else {
-        itemArray[count] = values[i];
-        itemCount[count] = 1;
-        count++;
-      }
-    }
-    var maxValue = 0,
-        maxIndex = 0;
-    for (i = 0; i < count; i++) {
-      if (itemCount[i] > maxValue) {
-        maxValue = itemCount[i];
-        maxIndex = i;
-      }
-    }
-    return itemArray[maxIndex];
-  };
-  exports.covariance = function covariance(vector1, vector2, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var mean1 = exports.mean(vector1);
-    var mean2 = exports.mean(vector2);
-    if (vector1.length !== vector2.length)
-      throw "Vectors do not have the same dimensions";
-    var cov = 0,
-        l = vector1.length;
-    for (var i = 0; i < l; i++) {
-      var x = vector1[i] - mean1;
-      var y = vector2[i] - mean2;
-      cov += x * y;
-    }
-    if (unbiased)
-      return cov / (l - 1);
-    else
-      return cov / l;
-  };
-  exports.skewness = function skewness(values, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var theMean = exports.mean(values);
-    var s2 = 0,
-        s3 = 0,
-        l = values.length;
-    for (var i = 0; i < l; i++) {
-      var dev = values[i] - theMean;
-      s2 += dev * dev;
-      s3 += dev * dev * dev;
-    }
-    var m2 = s2 / l;
-    var m3 = s3 / l;
-    var g = m3 / (Math.pow(m2, 3 / 2.0));
-    if (unbiased) {
-      var a = Math.sqrt(l * (l - 1));
-      var b = l - 2;
-      return (a / b) * g;
-    } else {
-      return g;
-    }
-  };
-  exports.kurtosis = function kurtosis(values, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var theMean = exports.mean(values);
-    var n = values.length,
-        s2 = 0,
-        s4 = 0;
-    for (var i = 0; i < n; i++) {
-      var dev = values[i] - theMean;
-      s2 += dev * dev;
-      s4 += dev * dev * dev * dev;
-    }
-    var m2 = s2 / n;
-    var m4 = s4 / n;
-    if (unbiased) {
-      var v = s2 / (n - 1);
-      var a = (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3));
-      var b = s4 / (v * v);
-      var c = ((n - 1) * (n - 1)) / ((n - 2) * (n - 3));
-      return a * b - 3 * c;
-    } else {
-      return m4 / (m2 * m2) - 3;
-    }
-  };
-  exports.entropy = function entropy(values, eps) {
-    if (typeof(eps) === 'undefined')
-      eps = 0;
-    var sum = 0,
-        l = values.length;
-    for (var i = 0; i < l; i++)
-      sum += values[i] * Math.log(values[i] + eps);
-    return -sum;
-  };
-  exports.weightedMean = function weightedMean(values, weights) {
-    var sum = 0,
-        l = values.length;
-    for (var i = 0; i < l; i++)
-      sum += values[i] * weights[i];
-    return sum;
-  };
-  exports.weightedStandardDeviation = function weightedStandardDeviation(values, weights) {
-    return Math.sqrt(exports.weightedVariance(values, weights));
-  };
-  exports.weightedVariance = function weightedVariance(values, weights) {
-    var theMean = exports.weightedMean(values, weights);
-    var vari = 0,
-        l = values.length;
-    var a = 0,
-        b = 0;
-    for (var i = 0; i < l; i++) {
-      var z = values[i] - theMean;
-      var w = weights[i];
-      vari += w * (z * z);
-      b += w;
-      a += w * w;
-    }
-    return vari * (b / (b * b - a));
-  };
-  exports.center = function center(values, inPlace) {
-    if (typeof(inPlace) === 'undefined')
-      inPlace = false;
-    var result = values;
-    if (!inPlace)
-      result = [].concat(values);
-    var theMean = exports.mean(result),
-        l = result.length;
-    for (var i = 0; i < l; i++)
-      result[i] -= theMean;
-  };
-  exports.standardize = function standardize(values, standardDev, inPlace) {
-    if (typeof(standardDev) === 'undefined')
-      standardDev = exports.standardDeviation(values);
-    if (typeof(inPlace) === 'undefined')
-      inPlace = false;
-    var l = values.length;
-    var result = inPlace ? values : new Array(l);
-    for (var i = 0; i < l; i++)
-      result[i] = values[i] / standardDev;
-    return result;
-  };
-  exports.cumulativeSum = function cumulativeSum(array) {
-    var l = array.length;
-    var result = new Array(l);
-    result[0] = array[0];
-    for (var i = 1; i < l; i++)
-      result[i] = result[i - 1] + array[i];
-    return result;
-  };
+  });
   return module.exports;
 });
 
-System.registerDynamic("npm:ml-stat@1.2.0/matrix.js", ["./array"], true, function($__require, exports, module) {
-  "use strict";
+System.registerDynamic("npm:core-js@1.2.6/library/fn/object/keys.js", ["../../modules/es6.object.keys", "../../modules/$.core"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  var arrayStat = $__require('./array');
-  function compareNumbers(a, b) {
-    return a - b;
-  }
-  exports.max = function max(matrix) {
-    var max = -Infinity;
-    for (var i = 0; i < matrix.length; i++) {
-      for (var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] > max)
-          max = matrix[i][j];
-      }
-    }
-    return max;
-  };
-  exports.min = function min(matrix) {
-    var min = Infinity;
-    for (var i = 0; i < matrix.length; i++) {
-      for (var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] < min)
-          min = matrix[i][j];
-      }
-    }
-    return min;
-  };
-  exports.minMax = function minMax(matrix) {
-    var min = Infinity;
-    var max = -Infinity;
-    for (var i = 0; i < matrix.length; i++) {
-      for (var j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] < min)
-          min = matrix[i][j];
-        if (matrix[i][j] > max)
-          max = matrix[i][j];
-      }
-    }
-    return {
-      min,
-      max
-    };
-  };
-  exports.entropy = function entropy(matrix, eps) {
-    if (typeof(eps) === 'undefined') {
-      eps = 0;
-    }
-    var sum = 0,
-        l1 = matrix.length,
-        l2 = matrix[0].length;
-    for (var i = 0; i < l1; i++) {
-      for (var j = 0; j < l2; j++) {
-        sum += matrix[i][j] * Math.log(matrix[i][j] + eps);
-      }
-    }
-    return -sum;
-  };
-  exports.mean = function mean(matrix, dimension) {
-    if (typeof(dimension) === 'undefined') {
-      dimension = 0;
-    }
-    var rows = matrix.length,
-        cols = matrix[0].length,
-        theMean,
-        N,
-        i,
-        j;
-    if (dimension === -1) {
-      theMean = [0];
-      N = rows * cols;
-      for (i = 0; i < rows; i++) {
-        for (j = 0; j < cols; j++) {
-          theMean[0] += matrix[i][j];
-        }
-      }
-      theMean[0] /= N;
-    } else if (dimension === 0) {
-      theMean = new Array(cols);
-      N = rows;
-      for (j = 0; j < cols; j++) {
-        theMean[j] = 0;
-        for (i = 0; i < rows; i++) {
-          theMean[j] += matrix[i][j];
-        }
-        theMean[j] /= N;
-      }
-    } else if (dimension === 1) {
-      theMean = new Array(rows);
-      N = cols;
-      for (j = 0; j < rows; j++) {
-        theMean[j] = 0;
-        for (i = 0; i < cols; i++) {
-          theMean[j] += matrix[j][i];
-        }
-        theMean[j] /= N;
-      }
-    } else {
-      throw new Error('Invalid dimension');
-    }
-    return theMean;
-  };
-  exports.standardDeviation = function standardDeviation(matrix, means, unbiased) {
-    var vari = exports.variance(matrix, means, unbiased),
-        l = vari.length;
-    for (var i = 0; i < l; i++) {
-      vari[i] = Math.sqrt(vari[i]);
-    }
-    return vari;
-  };
-  exports.variance = function variance(matrix, means, unbiased) {
-    if (typeof(unbiased) === 'undefined') {
-      unbiased = true;
-    }
-    means = means || exports.mean(matrix);
-    var rows = matrix.length;
-    if (rows === 0)
-      return [];
-    var cols = matrix[0].length;
-    var vari = new Array(cols);
-    for (var j = 0; j < cols; j++) {
-      var sum1 = 0,
-          sum2 = 0,
-          x = 0;
-      for (var i = 0; i < rows; i++) {
-        x = matrix[i][j] - means[j];
-        sum1 += x;
-        sum2 += x * x;
-      }
-      if (unbiased) {
-        vari[j] = (sum2 - ((sum1 * sum1) / rows)) / (rows - 1);
-      } else {
-        vari[j] = (sum2 - ((sum1 * sum1) / rows)) / rows;
-      }
-    }
-    return vari;
-  };
-  exports.median = function median(matrix) {
-    var rows = matrix.length,
-        cols = matrix[0].length;
-    var medians = new Array(cols);
-    for (var i = 0; i < cols; i++) {
-      var data = new Array(rows);
-      for (var j = 0; j < rows; j++) {
-        data[j] = matrix[j][i];
-      }
-      data.sort(compareNumbers);
-      var N = data.length;
-      if (N % 2 === 0) {
-        medians[i] = (data[N / 2] + data[(N / 2) - 1]) * 0.5;
-      } else {
-        medians[i] = data[Math.floor(N / 2)];
-      }
-    }
-    return medians;
-  };
-  exports.mode = function mode(matrix) {
-    var rows = matrix.length,
-        cols = matrix[0].length,
-        modes = new Array(cols),
-        i,
-        j;
-    for (i = 0; i < cols; i++) {
-      var itemCount = new Array(rows);
-      for (var k = 0; k < rows; k++) {
-        itemCount[k] = 0;
-      }
-      var itemArray = new Array(rows);
-      var count = 0;
-      for (j = 0; j < rows; j++) {
-        var index = itemArray.indexOf(matrix[j][i]);
-        if (index >= 0) {
-          itemCount[index]++;
-        } else {
-          itemArray[count] = matrix[j][i];
-          itemCount[count] = 1;
-          count++;
-        }
-      }
-      var maxValue = 0,
-          maxIndex = 0;
-      for (j = 0; j < count; j++) {
-        if (itemCount[j] > maxValue) {
-          maxValue = itemCount[j];
-          maxIndex = j;
-        }
-      }
-      modes[i] = itemArray[maxIndex];
-    }
-    return modes;
-  };
-  exports.skewness = function skewness(matrix, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var means = exports.mean(matrix);
-    var n = matrix.length,
-        l = means.length;
-    var skew = new Array(l);
-    for (var j = 0; j < l; j++) {
-      var s2 = 0,
-          s3 = 0;
-      for (var i = 0; i < n; i++) {
-        var dev = matrix[i][j] - means[j];
-        s2 += dev * dev;
-        s3 += dev * dev * dev;
-      }
-      var m2 = s2 / n;
-      var m3 = s3 / n;
-      var g = m3 / Math.pow(m2, 3 / 2);
-      if (unbiased) {
-        var a = Math.sqrt(n * (n - 1));
-        var b = n - 2;
-        skew[j] = (a / b) * g;
-      } else {
-        skew[j] = g;
-      }
-    }
-    return skew;
-  };
-  exports.kurtosis = function kurtosis(matrix, unbiased) {
-    if (typeof(unbiased) === 'undefined')
-      unbiased = true;
-    var means = exports.mean(matrix);
-    var n = matrix.length,
-        m = matrix[0].length;
-    var kurt = new Array(m);
-    for (var j = 0; j < m; j++) {
-      var s2 = 0,
-          s4 = 0;
-      for (var i = 0; i < n; i++) {
-        var dev = matrix[i][j] - means[j];
-        s2 += dev * dev;
-        s4 += dev * dev * dev * dev;
-      }
-      var m2 = s2 / n;
-      var m4 = s4 / n;
-      if (unbiased) {
-        var v = s2 / (n - 1);
-        var a = (n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3));
-        var b = s4 / (v * v);
-        var c = ((n - 1) * (n - 1)) / ((n - 2) * (n - 3));
-        kurt[j] = a * b - 3 * c;
-      } else {
-        kurt[j] = m4 / (m2 * m2) - 3;
-      }
-    }
-    return kurt;
-  };
-  exports.standardError = function standardError(matrix) {
-    var samples = matrix.length;
-    var standardDeviations = exports.standardDeviation(matrix);
-    var l = standardDeviations.length;
-    var standardErrors = new Array(l);
-    var sqrtN = Math.sqrt(samples);
-    for (var i = 0; i < l; i++) {
-      standardErrors[i] = standardDeviations[i] / sqrtN;
-    }
-    return standardErrors;
-  };
-  exports.covariance = function covariance(matrix, dimension) {
-    return exports.scatter(matrix, undefined, dimension);
-  };
-  exports.scatter = function scatter(matrix, divisor, dimension) {
-    if (typeof(dimension) === 'undefined') {
-      dimension = 0;
-    }
-    if (typeof(divisor) === 'undefined') {
-      if (dimension === 0) {
-        divisor = matrix.length - 1;
-      } else if (dimension === 1) {
-        divisor = matrix[0].length - 1;
-      }
-    }
-    var means = exports.mean(matrix, dimension);
-    var rows = matrix.length;
-    if (rows === 0) {
-      return [[]];
-    }
-    var cols = matrix[0].length,
-        cov,
-        i,
-        j,
-        s,
-        k;
-    if (dimension === 0) {
-      cov = new Array(cols);
-      for (i = 0; i < cols; i++) {
-        cov[i] = new Array(cols);
-      }
-      for (i = 0; i < cols; i++) {
-        for (j = i; j < cols; j++) {
-          s = 0;
-          for (k = 0; k < rows; k++) {
-            s += (matrix[k][j] - means[j]) * (matrix[k][i] - means[i]);
-          }
-          s /= divisor;
-          cov[i][j] = s;
-          cov[j][i] = s;
-        }
-      }
-    } else if (dimension === 1) {
-      cov = new Array(rows);
-      for (i = 0; i < rows; i++) {
-        cov[i] = new Array(rows);
-      }
-      for (i = 0; i < rows; i++) {
-        for (j = i; j < rows; j++) {
-          s = 0;
-          for (k = 0; k < cols; k++) {
-            s += (matrix[j][k] - means[j]) * (matrix[i][k] - means[i]);
-          }
-          s /= divisor;
-          cov[i][j] = s;
-          cov[j][i] = s;
-        }
-      }
-    } else {
-      throw new Error('Invalid dimension');
-    }
-    return cov;
-  };
-  exports.correlation = function correlation(matrix) {
-    var means = exports.mean(matrix),
-        standardDeviations = exports.standardDeviation(matrix, true, means),
-        scores = exports.zScores(matrix, means, standardDeviations),
-        rows = matrix.length,
-        cols = matrix[0].length,
-        i,
-        j;
-    var cor = new Array(cols);
-    for (i = 0; i < cols; i++) {
-      cor[i] = new Array(cols);
-    }
-    for (i = 0; i < cols; i++) {
-      for (j = i; j < cols; j++) {
-        var c = 0;
-        for (var k = 0,
-            l = scores.length; k < l; k++) {
-          c += scores[k][j] * scores[k][i];
-        }
-        c /= rows - 1;
-        cor[i][j] = c;
-        cor[j][i] = c;
-      }
-    }
-    return cor;
-  };
-  exports.zScores = function zScores(matrix, means, standardDeviations) {
-    means = means || exports.mean(matrix);
-    if (typeof(standardDeviations) === 'undefined')
-      standardDeviations = exports.standardDeviation(matrix, true, means);
-    return exports.standardize(exports.center(matrix, means, false), standardDeviations, true);
-  };
-  exports.center = function center(matrix, means, inPlace) {
-    means = means || exports.mean(matrix);
-    var result = matrix,
-        l = matrix.length,
-        i,
-        j,
-        jj;
-    if (!inPlace) {
-      result = new Array(l);
-      for (i = 0; i < l; i++) {
-        result[i] = new Array(matrix[i].length);
-      }
-    }
-    for (i = 0; i < l; i++) {
-      var row = result[i];
-      for (j = 0, jj = row.length; j < jj; j++) {
-        row[j] = matrix[i][j] - means[j];
-      }
-    }
-    return result;
-  };
-  exports.standardize = function standardize(matrix, standardDeviations, inPlace) {
-    if (typeof(standardDeviations) === 'undefined')
-      standardDeviations = exports.standardDeviation(matrix);
-    var result = matrix,
-        l = matrix.length,
-        i,
-        j,
-        jj;
-    if (!inPlace) {
-      result = new Array(l);
-      for (i = 0; i < l; i++) {
-        result[i] = new Array(matrix[i].length);
-      }
-    }
-    for (i = 0; i < l; i++) {
-      var resultRow = result[i];
-      var sourceRow = matrix[i];
-      for (j = 0, jj = resultRow.length; j < jj; j++) {
-        if (standardDeviations[j] !== 0 && !isNaN(standardDeviations[j])) {
-          resultRow[j] = sourceRow[j] / standardDeviations[j];
-        }
-      }
-    }
-    return result;
-  };
-  exports.weightedVariance = function weightedVariance(matrix, weights) {
-    var means = exports.mean(matrix);
-    var rows = matrix.length;
-    if (rows === 0)
-      return [];
-    var cols = matrix[0].length;
-    var vari = new Array(cols);
-    for (var j = 0; j < cols; j++) {
-      var sum = 0;
-      var a = 0,
-          b = 0;
-      for (var i = 0; i < rows; i++) {
-        var z = matrix[i][j] - means[j];
-        var w = weights[i];
-        sum += w * (z * z);
-        b += w;
-        a += w * w;
-      }
-      vari[j] = sum * (b / (b * b - a));
-    }
-    return vari;
-  };
-  exports.weightedMean = function weightedMean(matrix, weights, dimension) {
-    if (typeof(dimension) === 'undefined') {
-      dimension = 0;
-    }
-    var rows = matrix.length;
-    if (rows === 0)
-      return [];
-    var cols = matrix[0].length,
-        means,
-        i,
-        ii,
-        j,
-        w,
-        row;
-    if (dimension === 0) {
-      means = new Array(cols);
-      for (i = 0; i < cols; i++) {
-        means[i] = 0;
-      }
-      for (i = 0; i < rows; i++) {
-        row = matrix[i];
-        w = weights[i];
-        for (j = 0; j < cols; j++) {
-          means[j] += row[j] * w;
-        }
-      }
-    } else if (dimension === 1) {
-      means = new Array(rows);
-      for (i = 0; i < rows; i++) {
-        means[i] = 0;
-      }
-      for (j = 0; j < rows; j++) {
-        row = matrix[j];
-        w = weights[j];
-        for (i = 0; i < cols; i++) {
-          means[j] += row[i] * w;
-        }
-      }
-    } else {
-      throw new Error('Invalid dimension');
-    }
-    var weightSum = arrayStat.sum(weights);
-    if (weightSum !== 0) {
-      for (i = 0, ii = means.length; i < ii; i++) {
-        means[i] /= weightSum;
-      }
-    }
-    return means;
-  };
-  exports.weightedCovariance = function weightedCovariance(matrix, weights, means, dimension) {
-    dimension = dimension || 0;
-    means = means || exports.weightedMean(matrix, weights, dimension);
-    var s1 = 0,
-        s2 = 0;
-    for (var i = 0,
-        ii = weights.length; i < ii; i++) {
-      s1 += weights[i];
-      s2 += weights[i] * weights[i];
-    }
-    var factor = s1 / (s1 * s1 - s2);
-    return exports.weightedScatter(matrix, weights, means, factor, dimension);
-  };
-  exports.weightedScatter = function weightedScatter(matrix, weights, means, factor, dimension) {
-    dimension = dimension || 0;
-    means = means || exports.weightedMean(matrix, weights, dimension);
-    if (typeof(factor) === 'undefined') {
-      factor = 1;
-    }
-    var rows = matrix.length;
-    if (rows === 0) {
-      return [[]];
-    }
-    var cols = matrix[0].length,
-        cov,
-        i,
-        j,
-        k,
-        s;
-    if (dimension === 0) {
-      cov = new Array(cols);
-      for (i = 0; i < cols; i++) {
-        cov[i] = new Array(cols);
-      }
-      for (i = 0; i < cols; i++) {
-        for (j = i; j < cols; j++) {
-          s = 0;
-          for (k = 0; k < rows; k++) {
-            s += weights[k] * (matrix[k][j] - means[j]) * (matrix[k][i] - means[i]);
-          }
-          cov[i][j] = s * factor;
-          cov[j][i] = s * factor;
-        }
-      }
-    } else if (dimension === 1) {
-      cov = new Array(rows);
-      for (i = 0; i < rows; i++) {
-        cov[i] = new Array(rows);
-      }
-      for (i = 0; i < rows; i++) {
-        for (j = i; j < rows; j++) {
-          s = 0;
-          for (k = 0; k < cols; k++) {
-            s += weights[k] * (matrix[j][k] - means[j]) * (matrix[i][k] - means[i]);
-          }
-          cov[i][j] = s * factor;
-          cov[j][i] = s * factor;
-        }
-      }
-    } else {
-      throw new Error('Invalid dimension');
-    }
-    return cov;
-  };
+  $__require('../../modules/es6.object.keys');
+  module.exports = $__require('../../modules/$.core').Object.keys;
   return module.exports;
 });
 
-System.registerDynamic("npm:ml-stat@1.2.0/index.js", ["./array", "./matrix"], true, function($__require, exports, module) {
-  "use strict";
+System.registerDynamic("npm:babel-runtime@5.8.38/core-js/object/keys.js", ["core-js/library/fn/object/keys"], true, function($__require, exports, module) {
   ;
   var define,
       global = this,
       GLOBAL = this;
-  exports.array = $__require('./array');
-  exports.matrix = $__require('./matrix');
-  return module.exports;
-});
-
-System.registerDynamic("npm:ml-stat@1.2.0.js", ["npm:ml-stat@1.2.0/index.js"], true, function($__require, exports, module) {
-  ;
-  var define,
-      global = this,
-      GLOBAL = this;
-  module.exports = $__require('npm:ml-stat@1.2.0/index.js');
-  return module.exports;
-});
-
-System.registerDynamic("npm:ml-pca@1.1.1/src/pca.js", ["ml-matrix", "ml-stat"], true, function($__require, exports, module) {
-  "use strict";
-  ;
-  var define,
-      global = this,
-      GLOBAL = this;
-  const Matrix = $__require('ml-matrix');
-  const EVD = Matrix.DC.EVD;
-  const SVD = Matrix.DC.SVD;
-  const Stat = $__require('ml-stat').matrix;
-  const mean = Stat.mean;
-  const stdev = Stat.standardDeviation;
-  const defaultOptions = {
-    isCovarianceMatrix: false,
-    center: true,
-    scale: false
+  module.exports = {
+    "default": $__require('core-js/library/fn/object/keys'),
+    __esModule: true
   };
-  class PCA {
-    constructor(dataset, options, reload, model) {
-      if (reload) {
-        this.center = model.center;
-        this.scale = model.scale;
-        this.means = model.means;
-        this.stdevs = model.stdevs;
-        this.U = Matrix.checkMatrix(model.U);
-        this.S = model.S;
-        return;
-      }
-      options = Object.assign({}, defaultOptions, options);
-      this.center = false;
-      this.scale = false;
-      this.means = null;
-      this.stdevs = null;
-      if (options.isCovarianceMatrix) {
-        this._computeFromCovarianceMatrix(dataset);
-        return;
-      }
-      var useCovarianceMatrix;
-      if (typeof options.useCovarianceMatrix === 'boolean') {
-        useCovarianceMatrix = options.useCovarianceMatrix;
-      } else {
-        useCovarianceMatrix = dataset.length > dataset[0].length;
-      }
-      if (useCovarianceMatrix) {
-        dataset = this._adjust(dataset, options);
-        const covarianceMatrix = dataset.transpose().mmul(dataset).div(dataset.rows - 1);
-        this._computeFromCovarianceMatrix(covarianceMatrix);
-      } else {
-        dataset = this._adjust(dataset, options);
-        var svd = new SVD(dataset, {
-          computeLeftSingularVectors: false,
-          computeRightSingularVectors: true,
-          autoTranspose: true
-        });
-        this.U = svd.rightSingularVectors;
-        const singularValues = svd.diagonal;
-        const eigenvalues = new Array(singularValues.length);
-        for (var i = 0; i < singularValues.length; i++) {
-          eigenvalues[i] = singularValues[i] * singularValues[i] / (dataset.length - 1);
-        }
-        this.S = eigenvalues;
-      }
-    }
-    static load(model) {
-      if (model.name !== 'PCA')
-        throw new RangeError('Invalid model: ' + model.name);
-      return new PCA(null, null, true, model);
-    }
-    toJSON() {
-      return {
-        name: 'PCA',
-        center: this.center,
-        scale: this.scale,
-        means: this.means,
-        stdevs: this.stdevs,
-        U: this.U,
-        S: this.S
-      };
-    }
-    predict(dataset) {
-      dataset = new Matrix(dataset);
-      if (this.center) {
-        dataset.subRowVector(this.means);
-        if (this.scale) {
-          dataset.divRowVector(this.stdevs);
-        }
-      }
-      return dataset.mmul(this.U);
-    }
-    getExplainedVariance() {
-      var sum = 0;
-      for (var i = 0; i < this.S.length; i++) {
-        sum += this.S[i];
-      }
-      return this.S.map((value) => value / sum);
-    }
-    getCumulativeVariance() {
-      var explained = this.getExplainedVariance();
-      for (var i = 1; i < explained.length; i++) {
-        explained[i] += explained[i - 1];
-      }
-      return explained;
-    }
-    getEigenvectors() {
-      return this.U;
-    }
-    getEigenvalues() {
-      return this.S;
-    }
-    getStandardDeviations() {
-      return this.S.map((x) => Math.sqrt(x));
-    }
-    getLoadings() {
-      return this.U.transpose();
-    }
-    _adjust(dataset, options) {
-      this.center = !!options.center;
-      this.scale = !!options.scale;
-      dataset = new Matrix(dataset);
-      if (this.center) {
-        const means = mean(dataset);
-        const stdevs = this.scale ? stdev(dataset, means, true) : null;
-        this.means = means;
-        dataset.subRowVector(means);
-        if (this.scale) {
-          for (var i = 0; i < stdevs.length; i++) {
-            if (stdevs[i] === 0) {
-              throw new RangeError('Cannot scale the dataset (standard deviation is zero at index ' + i);
-            }
-          }
-          this.stdevs = stdevs;
-          dataset.divRowVector(stdevs);
-        }
-      }
-      return dataset;
-    }
-    _computeFromCovarianceMatrix(dataset) {
-      const evd = new EVD(dataset, {assumeSymmetric: true});
-      this.U = evd.eigenvectorMatrix;
-      for (var i = 0; i < this.U.length; i++) {
-        this.U[i].reverse();
-      }
-      this.S = evd.realEigenvalues.reverse();
-    }
-  }
-  module.exports = PCA;
-  return module.exports;
-});
-
-System.registerDynamic("npm:ml-pca@1.1.1.js", ["npm:ml-pca@1.1.1/src/pca.js"], true, function($__require, exports, module) {
-  ;
-  var define,
-      global = this,
-      GLOBAL = this;
-  module.exports = $__require('npm:ml-pca@1.1.1/src/pca.js');
   return module.exports;
 });
 
@@ -40852,97 +40888,292 @@ System.registerDynamic("npm:d3@3.5.16.js", ["npm:d3@3.5.16/d3.js"], true, functi
   return module.exports;
 });
 
+(function() {
+var define = System.amdDefine;
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define("github:Caged/d3-tip@0.6.7/index.js", ["d3"], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = function(d3) {
+      d3.tip = factory(d3);
+      return d3.tip;
+    };
+  } else {
+    root.d3.tip = factory(root.d3);
+  }
+}(this, function(d3) {
+  return function() {
+    var direction = d3_tip_direction,
+        offset = d3_tip_offset,
+        html = d3_tip_html,
+        node = initNode(),
+        svg = null,
+        point = null,
+        target = null;
+    function tip(vis) {
+      svg = getSVGNode(vis);
+      point = svg.createSVGPoint();
+      document.body.appendChild(node);
+    }
+    tip.show = function() {
+      var args = Array.prototype.slice.call(arguments);
+      if (args[args.length - 1] instanceof SVGElement)
+        target = args.pop();
+      var content = html.apply(this, args),
+          poffset = offset.apply(this, args),
+          dir = direction.apply(this, args),
+          nodel = getNodeEl(),
+          i = directions.length,
+          coords,
+          scrollTop = document.documentElement.scrollTop || document.body.scrollTop,
+          scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+      nodel.html(content).style({
+        opacity: 1,
+        'pointer-events': 'all'
+      });
+      while (i--)
+        nodel.classed(directions[i], false);
+      coords = direction_callbacks.get(dir).apply(this);
+      nodel.classed(dir, true).style({
+        top: (coords.top + poffset[0]) + scrollTop + 'px',
+        left: (coords.left + poffset[1]) + scrollLeft + 'px'
+      });
+      return tip;
+    };
+    tip.hide = function() {
+      var nodel = getNodeEl();
+      nodel.style({
+        opacity: 0,
+        'pointer-events': 'none'
+      });
+      return tip;
+    };
+    tip.attr = function(n, v) {
+      if (arguments.length < 2 && typeof n === 'string') {
+        return getNodeEl().attr(n);
+      } else {
+        var args = Array.prototype.slice.call(arguments);
+        d3.selection.prototype.attr.apply(getNodeEl(), args);
+      }
+      return tip;
+    };
+    tip.style = function(n, v) {
+      if (arguments.length < 2 && typeof n === 'string') {
+        return getNodeEl().style(n);
+      } else {
+        var args = Array.prototype.slice.call(arguments);
+        d3.selection.prototype.style.apply(getNodeEl(), args);
+      }
+      return tip;
+    };
+    tip.direction = function(v) {
+      if (!arguments.length)
+        return direction;
+      direction = v == null ? v : d3.functor(v);
+      return tip;
+    };
+    tip.offset = function(v) {
+      if (!arguments.length)
+        return offset;
+      offset = v == null ? v : d3.functor(v);
+      return tip;
+    };
+    tip.html = function(v) {
+      if (!arguments.length)
+        return html;
+      html = v == null ? v : d3.functor(v);
+      return tip;
+    };
+    tip.destroy = function() {
+      if (node) {
+        getNodeEl().remove();
+        node = null;
+      }
+      return tip;
+    };
+    function d3_tip_direction() {
+      return 'n';
+    }
+    function d3_tip_offset() {
+      return [0, 0];
+    }
+    function d3_tip_html() {
+      return ' ';
+    }
+    var direction_callbacks = d3.map({
+      n: direction_n,
+      s: direction_s,
+      e: direction_e,
+      w: direction_w,
+      nw: direction_nw,
+      ne: direction_ne,
+      sw: direction_sw,
+      se: direction_se
+    }),
+        directions = direction_callbacks.keys();
+    function direction_n() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.n.y - node.offsetHeight,
+        left: bbox.n.x - node.offsetWidth / 2
+      };
+    }
+    function direction_s() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.s.y,
+        left: bbox.s.x - node.offsetWidth / 2
+      };
+    }
+    function direction_e() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.e.y - node.offsetHeight / 2,
+        left: bbox.e.x
+      };
+    }
+    function direction_w() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.w.y - node.offsetHeight / 2,
+        left: bbox.w.x - node.offsetWidth
+      };
+    }
+    function direction_nw() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.nw.y - node.offsetHeight,
+        left: bbox.nw.x - node.offsetWidth
+      };
+    }
+    function direction_ne() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.ne.y - node.offsetHeight,
+        left: bbox.ne.x
+      };
+    }
+    function direction_sw() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.sw.y,
+        left: bbox.sw.x - node.offsetWidth
+      };
+    }
+    function direction_se() {
+      var bbox = getScreenBBox();
+      return {
+        top: bbox.se.y,
+        left: bbox.e.x
+      };
+    }
+    function initNode() {
+      var node = d3.select(document.createElement('div'));
+      node.style({
+        position: 'absolute',
+        top: 0,
+        opacity: 0,
+        'pointer-events': 'none',
+        'box-sizing': 'border-box'
+      });
+      return node.node();
+    }
+    function getSVGNode(el) {
+      el = el.node();
+      if (el.tagName.toLowerCase() === 'svg')
+        return el;
+      return el.ownerSVGElement;
+    }
+    function getNodeEl() {
+      if (node === null) {
+        node = initNode();
+        document.body.appendChild(node);
+      }
+      ;
+      return d3.select(node);
+    }
+    function getScreenBBox() {
+      var targetel = target || d3.event.target;
+      while ('undefined' === typeof targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
+        targetel = targetel.parentNode;
+      }
+      var bbox = {},
+          matrix = targetel.getScreenCTM(),
+          tbbox = targetel.getBBox(),
+          width = tbbox.width,
+          height = tbbox.height,
+          x = tbbox.x,
+          y = tbbox.y;
+      point.x = x;
+      point.y = y;
+      bbox.nw = point.matrixTransform(matrix);
+      point.x += width;
+      bbox.ne = point.matrixTransform(matrix);
+      point.y += height;
+      bbox.se = point.matrixTransform(matrix);
+      point.x -= width;
+      bbox.sw = point.matrixTransform(matrix);
+      point.y -= height / 2;
+      bbox.w = point.matrixTransform(matrix);
+      point.x += width;
+      bbox.e = point.matrixTransform(matrix);
+      point.x -= width / 2;
+      point.y -= height / 2;
+      bbox.n = point.matrixTransform(matrix);
+      point.y += height;
+      bbox.s = point.matrixTransform(matrix);
+      return bbox;
+    }
+    return tip;
+  };
+}));
+
+})();
+(function() {
+var define = System.amdDefine;
+define("github:Caged/d3-tip@0.6.7.js", ["github:Caged/d3-tip@0.6.7/index.js"], function(main) {
+  return main;
+});
+
+})();
 System.register("components/examples/pca/pca.css!github:systemjs/plugin-css@0.1.21.js", [], function() { return { setters: [], execute: function() {} } });
 
-System.register('components/examples/pca/pca-chart.js', ['d3', './pca.css!'], function (_export) {
-  /* eslint import/no-extraneous-dependencies: 0 */
+System.register('components/examples/pca/pca-chart.js', ['npm:babel-runtime@5.8.38/core-js/object/keys.js', 'd3', 'd3-tip', './pca.css!'], function (_export) {
+  var _Object$keys, d3, d3Tip;
 
-  'use strict';
-
-  var d3;
-
-  _export('default', Chart);
-
-  /* const testDataset = [
-         [3.38156266663556, 3.38911268489207, 3, 3],
-         [4.52787538040321, 5.85417810116941, 4, 4],
-         [2.65568186873946, 4.41199471748479, 4, 5],
-         [2.76523467422508, 3.71541364974329, 3, 4],
-         [2.84656010622109, 4.17550644951439, 5, 3],
-         [3.89067195630921, 6.48838087188621, 5, 5],
-         [3.47580524144079, 3.63284876204706, 3, 4],
-         [5.91129844549583, 6.68076852676779, 4, 3],
-         [3.92889396796927, 5.09844660814783, 5, 4],
-         [4.56183536608942, 5.62329929038287, 3, 5],
-         [4.57407170552516, 5.39765068914995, 4, 3],
-         [4.37173355733069, 5.46116548918004, 5, 4],
-         [4.19169387625100, 4.95469359045186, 2, 5],
-         [5.24408517686664, 4.66148766849075, 3, 6],
-         [2.83584020280787, 3.76801716326883, 4, 2],
-         [5.63526969258877, 6.31211438310560, 5, 3],
-         [4.68632967964966, 5.66524110304899, 3, 5],
-         [2.85051337486241, 4.62645627270763, 4, 4],
-         [5.11015730037567, 7.36319662353662, 5, 3],
-         [5.18256376844695, 4.64650908778182, 6, 5],
-         [5.70732809135459, 6.68103994977504, 3, 5],
-         [3.57968458251575, 4.80278073546266, 6, 3],
-         [5.63937773123337, 6.12043594486419, 2, 5],
-         [4.26346851160160, 4.68942896498378, 3, 4],
-         [2.53651693125750, 3.88449077575653, 5, 3],
-         [3.22382901750257, 4.94255585367287, 5, 5],
-         [4.92948801055806, 5.95501971122402, 4, 4],
-         [5.79295773976472, 5.10839305453511, 2, 4],
-         [2.81684823843681, 4.81895768959782, 3, 4],
-         [3.88882413905485, 5.10036563684974, 4, 5],
-         [3.34323419214569, 5.89301345482551, 6, 3],
-         [5.87973413931621, 5.52141663871971, 3, 5],
-         [3.10391912309722, 3.85710242154672, 5, 4],
-         [5.33150572016357, 4.68074234658945, 4, 3],
-         [3.37542686902548, 4.56537851617577, 3, 5],
-         [4.77667888193414, 6.25435038973932, 4, 3],
-         [2.67574630193237, 3.73096987540176, 3, 5],
-         [5.50027665196111, 5.67948113445839, 5, 3],
-         [1.79709714108619, 3.24753885348582, 3, 3],
-         [4.32251470267314, 5.11110472186451, 6, 3],
-         [4.42100444798251, 6.02563977712186, 3, 3],
-         [3.17929886266190, 4.43686031619158, 4, 3],
-         [3.03354124664264, 3.97879278223097, 2, 4],
-         [4.60934820070329, 5.87979200261535, 4, 4],
-         [2.96378859260761, 3.30024834860712, 3, 5],
-         [3.97176248181608, 5.40773735417849, 5, 3],
-         [1.18023320575165, 2.87869409391385, 3, 5],
-         [1.91895045046187, 5.07107847507096, 3, 3],
-         [3.95524687147485, 4.50532709674253, 4, 4],
-         [5.11795499426461, 6.08507386392396, 3, 5]
-  		];*/
+  function metaList(metadata) {
+    return _Object$keys(metadata).map(function (k) {
+      return k + ': ' + metadata[k];
+    }).join('<br />');
+  }
 
   function Chart() {
-    var width = 900;
-    var height = 450;
-    var xPadding = 60;
-    var yPadding = 40;
+    var width = 1100;
+    var height = 550;
+    var variance = [];
+    var xPadding = 50;
+    var yPadding = 25;
+    var color = d3.scale.category20();
 
     function my(selection) {
       selection.each(function (data) {
-        console.log('data', data);
         var firstCol = data[0];
         var secondCol = data[1];
         var metaData = data.metaData;
         var pcaData = data.pcaData;
+        var tip = d3Tip().attr('class', 'd3-tip').offset([-10, 0]).html(function (d, i) {
+          return '\n        <strong>Coordinates:</strong>\n        <span style="color:' + color(metaData[i]) + '">(' + [d[secondCol], d[firstCol]] + ')</span>\n        <p />\n        ' + metaList(metaData[i]) + '\n      ';
+        });
         var xScale = d3.scale.linear().domain(d3.extent(pcaData, function (d) {
-          return d[firstCol];
+          return d[secondCol];
         })).range([0, width]);
         var yScale = d3.scale.linear().domain(d3.extent(pcaData, function (d) {
-          return d[secondCol];
+          return d[firstCol];
         })).range([height, 0]);
-        var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(10);
-        var yAxis = d3.svg.axis().scale(yScale).orient('left').ticks(10);
-        var color = d3.scale.category10();
+        var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(5);
+        var yAxis = d3.svg.axis().scale(yScale).orient('left').ticks(5);
         var locX = xPadding * (secondCol + 1) + secondCol * width;
-        var locY = yPadding * (firstCol + 1) + firstCol * height;
-
-        console.log(locX, locY);
-
+        var locY = yPadding * (firstCol + 1) + firstCol * height + 25;
         var svg = d3.select(this);
 
         svg.append('g').attr('class', 'axis').attr('transform', 'translate(' + locX + ', ' + (locY + height) + ')').call(xAxis);
@@ -40950,37 +41181,38 @@ System.register('components/examples/pca/pca-chart.js', ['d3', './pca.css!'], fu
         svg.append('g').attr('class', 'axis').attr('transform', 'translate(' + locX + ', ' + locY + ')').call(yAxis);
 
         if (firstCol === 0) {
-          svg.append('text').attr('x', locX + (width / 2 - 10)).attr('y', locY - 10).style('fill', 'green').style('font-size', 8).style('font-family', 'Comic Sans MS').style('font-weight', 'bold').style('text-decoration', 'underline').text('PCA ' + (secondCol + 1));
-        }
+          svg.append('text').attr('x', locX + (width / 2 - 10)).attr('y', locY - 25).style('fill', 'gray').style('font-size', 11).style('font-family', 'Times New Roman').style('font-weight', 'bold').style('text-decoration', 'underline').text('PCA ' + (secondCol + 1));
 
+          svg.append('text').attr('x', locX + (width / 2 - 70)).attr('y', locY - 10).style('fill', 'gray').style('font-size', '11').style('font-family', 'Times New Roman').style('font-weight', 'bold').text('Variance: ' + variance[secondCol]);
+        }
         if (secondCol === 0) {
-          svg.append('text').attr('x', locX - xPadding).attr('y', locY + (height / 2 + 10)).style('fill', 'green').style('font-size', 8).style('font-family', 'Comic Sans MS').style('font-weight', 'bold').text('PCA ' + (firstCol + 1));
+          svg.append('text').attr('x', locX - xPadding).attr('y', locY + (height / 2 + 10)).style('fill', 'gray').style('font-size', 9).style('font-family', 'Times New Roman').style('font-weight', 'bold').text('PCA ' + (firstCol + 1));
         }
 
         var domain1 = d3.max(pcaData, function (d) {
-          return d[firstCol];
+          return d[secondCol];
         }) - d3.min(pcaData, function (d) {
-          return d[firstCol];
+          return d[secondCol];
         });
         var domain2 = d3.max(pcaData, function (d) {
-          return d[secondCol];
+          return d[firstCol];
         }) - d3.min(pcaData, function (d) {
-          return d[secondCol];
-        });
-        var min1 = d3.min(pcaData, function (d) {
           return d[firstCol];
         });
-        var min2 = d3.min(pcaData, function (d) {
+        var min1 = d3.min(pcaData, function (d) {
           return d[secondCol];
         });
-
+        var min2 = d3.min(pcaData, function (d) {
+          return d[firstCol];
+        });
+        svg.call(tip);
         svg.selectAll('circle').data(pcaData).enter().append('circle').attr('cx', function (d) {
-          return (d[firstCol] - min1) / domain1 * width + locX;
+          return (d[secondCol] - min1) / domain1 * width + locX;
         }).attr('cy', function (d) {
-          return locY - (d[secondCol] - min2) / domain2 * height + height;
+          return locY - (d[firstCol] - min2) / domain2 * height + height;
         }).attr('r', 3).style('fill', function (d, i) {
           return color(metaData[i]);
-        });
+        }).on('mouseover', tip.show).on('mouseout', tip.hide);
       });
     }
 
@@ -40999,15 +41231,39 @@ System.register('components/examples/pca/pca-chart.js', ['d3', './pca.css!'], fu
       height = value;
       return my;
     };
+    my.variance = function (value) {
+      if (!arguments.length) {
+        return variance;
+      }
+      variance = value;
+      return my;
+    };
+    my.color = function (value) {
+      if (!arguments.length) {
+        return color;
+      }
+      color = value;
+      return my;
+    };
 
     return my;
   }
 
   return {
-    setters: [function (_d3) {
+    setters: [function (_babelRuntimeCoreJsObjectKeys) {
+      _Object$keys = _babelRuntimeCoreJsObjectKeys['default'];
+    }, function (_d3) {
       d3 = _d3['default'];
+    }, function (_d3Tip) {
+      d3Tip = _d3Tip['default'];
     }, function (_pcaCss) {}],
-    execute: function () {}
+    execute: function () {
+      /* eslint import/no-extraneous-dependencies: 0 */
+
+      'use strict';
+
+      _export('default', Chart);
+    }
   };
 });
 System.registerDynamic("components/examples/pca/pca.html!github:systemjs/plugin-text@0.0.2.js", [], true, function($__require, exports, module) {
@@ -41015,54 +41271,68 @@ System.registerDynamic("components/examples/pca/pca.html!github:systemjs/plugin-
   var define,
       global = this,
       GLOBAL = this;
-  module.exports = "<package-editor options=\"$ctrl.editorOptions\"></package-editor>\n\n<div id=\"charts\" class=\"container\">\n  <h2>{{$ctrl.dataPackage.title}}</h2>\n  <div marked=\"$ctrl.dataPackage.description\"></div>\n\n  <div id=\"_examples_pca__chart\" class=\"_examples_pca__pca\"></div>\n\n  <marked src=\"$ctrl.dataPackage.readme\"></marked>\n</div>\n";
+  module.exports = "<package-editor options=\"$ctrl.editorOptions\"></package-editor>\n\n<div id=\"charts\" class=\"container\">\n  <h2>{{$ctrl.dataPackage.title}}</h2>\n  <div marked=\"$ctrl.dataPackage.description\"></div>\n\n  <label># dims: </label>\n  <input type=\"number\" class=\"form-control\" min=\"1\" max=\"7\" ng-model=\"$ctrl.dims\" ng-change=\"$ctrl.draw()\"></input>\n  <label>color by: </label>\n  <select class=\"form-control\" ng-model=\"$ctrl.meta\" required=\"true\" ng-options=\"key for key in $ctrl.keys\" ng-change=\"$ctrl.draw()\"></select>\n\n  <div id=\"_examples_pca__chart\" class=\"_examples_pca__pca\"></div>\n\n  <marked src=\"'components/examples/pca/README.md'\"></marked>\n</div>\n";
   return module.exports;
 });
 
-System.register('components/examples/pca/pca.js', ['npm:babel-runtime@5.8.38/core-js/object/assign.js', 'd3', 'ml-pca', './pca-chart', './pca.html!text'], function (_export) {
-  var _Object$assign, d3, PCA, PCAChart, pcaHTML;
+System.register('components/examples/pca/pca.js', ['npm:babel-runtime@5.8.38/core-js/object/assign.js', 'npm:babel-runtime@5.8.38/core-js/object/keys.js', 'd3', 'ml-pca', 'ml-matrix', './pca-chart', './pca.html!text'], function (_export) {
+  var _Object$assign, _Object$keys, d3, PCA, Matrix, PCAChart, pcaHTML;
 
   function controller() {
     var $ctrl = this;
 
-    var num = 4;
-
-    var chart = new PCAChart().width(800 / num - 1 - 40).height(400 / num - 20); // (of 1) width:800, height:400
+    var metaData = [];
+    var pcaOutput = [];
+    var theVariance = [];
+    var color = d3.scale.category20();
 
     return _Object$assign($ctrl, {
+      keys: [],
+      meta: 'Treatment',
+      dims: 3,
       editorOptions: {
         data: $ctrl.dataPackage,
-        onChange: draw
+        onChange: update
       },
       draw: draw,
-      $onInit: draw
+      $onInit: update
     });
 
-    function draw() {
-      var pcaInput = $ctrl.dataPackage.resources[0].data = d3.csv.parseRows($ctrl.dataPackage.resources[0].content);
-      $ctrl.dataPackage.resources[1].data = d3.csv.parseRows($ctrl.dataPackage.resources[1].content);
+    function update() {
+      $ctrl.keys = _Object$keys($ctrl.dataPackage.resources[1].data[0]);
+      $ctrl.meta = $ctrl.keys[1];
 
-      pcaInput.forEach(function (d) {
-        d[0] = Number(d[0]);
-        d[1] = Number(d[1]);
-        d[2] = Number(d[2]);
+      var pcaInput = $ctrl.dataPackage.resources[0].data.table.map(function (r) {
+        return r.map(Number);
       });
-      console.log(pcaInput);
-      console.log($ctrl.dataPackage.resources);
 
-      var pca = new PCA($ctrl.dataPackage.resources[0].data, { scale: true });
-      var model = JSON.stringify(pca.toJSON());
-      var newpca = PCA.load(JSON.parse(model));
-      var out = newpca.predict($ctrl.dataPackage.resources[0].data);
+      pcaInput = new Matrix(pcaInput).transpose();
+      var pca = new PCA(pcaInput, { scale: false, center: true });
+      pcaOutput = pca.predict(pcaInput);
+      for (var i = 0; i < pcaOutput.length; i++) {
+        for (var j = 0; j < pcaOutput[0].length; j++) {
+          pcaOutput[i][j] = -pcaOutput[i][j];
+        }
+      }
+      theVariance = pca.getExplainedVariance();
+      draw();
+    }
 
-      console.log(out);
+    function draw() {
+      metaData = $ctrl.dataPackage.resources[1].data;
+      // $ctrl.meta
+      // $ctrl.dims
+      var num = $ctrl.dims;
+      var chart = new PCAChart().width(1100 / num - 50).height(550 / num - 50).variance(theVariance).color(function (d) {
+        return color(d[$ctrl.meta]);
+      }); // (of 1) width:800, height:400
 
       var x = [];
-      for (var i = 0; i < num - 1; i++) {
-        for (var j = 0; j < num - 1; j++) {
+      for (var i = 0; i < num; i++) {
+        for (var j = 0; j < num; j++) {
           var data = [i, j];
-          data.pcaData = out;
-          data.metaData = $ctrl.dataPackage.resources[1].data;
+          data.pcaData = pcaOutput;
+          data.metaData = metaData;
           x.push(data);
         }
       }
@@ -41071,7 +41341,7 @@ System.register('components/examples/pca/pca.js', ['npm:babel-runtime@5.8.38/cor
 
       chart$.selectAll('svg').remove();
 
-      var svg = d3.select('#_examples_pca__chart').append('svg').attr('width', 900).attr('height', 500);
+      var svg = d3.select('#_examples_pca__chart').append('svg').attr('width', 1200).attr('height', 600);
 
       svg.selectAll('g').data(x).enter().append('g').call(chart);
     }
@@ -41080,10 +41350,14 @@ System.register('components/examples/pca/pca.js', ['npm:babel-runtime@5.8.38/cor
   return {
     setters: [function (_babelRuntimeCoreJsObjectAssign) {
       _Object$assign = _babelRuntimeCoreJsObjectAssign['default'];
+    }, function (_babelRuntimeCoreJsObjectKeys) {
+      _Object$keys = _babelRuntimeCoreJsObjectKeys['default'];
     }, function (_d3) {
       d3 = _d3['default'];
     }, function (_mlPca) {
       PCA = _mlPca['default'];
+    }, function (_mlMatrix) {
+      Matrix = _mlMatrix['default'];
     }, function (_pcaChart) {
       PCAChart = _pcaChart['default'];
     }, function (_pcaHtmlText) {
@@ -45871,7 +46145,7 @@ System.register('components/examples/routes.js', ['angular', 'components/example
           datapackageUrl: 'components/examples/datapackage.json'
         }).when('/examples/pca', {
           template: '<pca data-package="$resolve.dataPackage"></pca>',
-          datapackageUrl: 'components/examples/pca/datapackage.json'
+          datapackageUrl: 'data/datapackage.json'
         });
       }]));
     }
@@ -59948,7 +60222,7 @@ System.register('components/editor/editor.js', ['npm:babel-runtime@5.8.38/core-j
       enableAdd: true,
       enableDrop: false,
       enableProtected: false,
-      types: ['text/plain', 'text/csv', 'text/tab-separated-values', 'application/json']
+      types: ['text/plain', 'text/csv', 'text/tab-separated-values', 'application/json', 'text/matrix']
 
       // svgsFrom: '#chart' // TODO
     }, this.options);
