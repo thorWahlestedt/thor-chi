@@ -10,8 +10,8 @@ function metaList (metadata) {
 }
 
 export default function Chart () {
-  let width = 900;
-  let height = 450;
+  let width = 1100;
+  let height = 550;
   let variance = [];
   const xPadding = 50;
   const yPadding = 25;
@@ -27,16 +27,16 @@ export default function Chart () {
         .offset([-10, 0])
         .html((d, i) => `
         <strong>Coordinates:</strong>
-        <span style="color:${color(metaData[i])}">(${[d[firstCol], d[secondCol]]})</span>
+        <span style="color:${color(metaData[i])}">(${[d[secondCol], d[firstCol]]})</span>
         <p />
         ${metaList(metaData[i])}
       `);
-      const xScale = d3.scale.linear().domain(d3.extent(pcaData, d => d[firstCol])).range([0, width]);
-      const yScale = d3.scale.linear().domain(d3.extent(pcaData, d => d[secondCol])).range([height, 0]);
+      const xScale = d3.scale.linear().domain(d3.extent(pcaData, d => d[secondCol])).range([0, width]);
+      const yScale = d3.scale.linear().domain(d3.extent(pcaData, d => d[firstCol])).range([height, 0]);
       const xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(5);
       const yAxis = d3.svg.axis().scale(yScale).orient('left').ticks(5);
       const locX = ((xPadding * (secondCol + 1)) + (secondCol * width));
-      const locY = ((yPadding * (firstCol + 1)) + (firstCol * height)) + 50;
+      const locY = ((yPadding * (firstCol + 1)) + (firstCol * height)) + 25;
       const svg = d3.select(this);
 
       svg.append('g')
@@ -80,17 +80,17 @@ export default function Chart () {
            .text(`PCA ${firstCol + 1}`);
       }
 
-      const domain1 = (d3.max(pcaData, d => d[firstCol])) - (d3.min(pcaData, d => d[firstCol]));
-      const domain2 = (d3.max(pcaData, d => d[secondCol])) - (d3.min(pcaData, d => d[secondCol]));
-      const min1 = d3.min(pcaData, d => d[firstCol]);
-      const min2 = d3.min(pcaData, d => d[secondCol]);
+      const domain1 = (d3.max(pcaData, d => d[secondCol])) - (d3.min(pcaData, d => d[secondCol]));
+      const domain2 = (d3.max(pcaData, d => d[firstCol])) - (d3.min(pcaData, d => d[firstCol]));
+      const min1 = d3.min(pcaData, d => d[secondCol]);
+      const min2 = d3.min(pcaData, d => d[firstCol]);
       svg.call(tip);
       svg.selectAll('circle')
          .data(pcaData)
          .enter()
          .append('circle')
-         .attr('cx', d => (((d[firstCol] - min1) / domain1) * width) + locX)
-         .attr('cy', d => (locY) - (((d[secondCol] - min2) / domain2) * height) + height)
+         .attr('cx', d => (((d[secondCol] - min1) / domain1) * width) + locX)
+         .attr('cy', d => (locY) - (((d[firstCol] - min2) / domain2) * height) + height)
          .attr('r', 3)
          .style('fill', (d, i) => color(metaData[i]))
          .on('mouseover', tip.show)

@@ -34,9 +34,13 @@ function controller () {
     let pcaInput = $ctrl.dataPackage.resources[0].data.table.map(r => r.map(Number));
 
     pcaInput = new Matrix(pcaInput).transpose();
-
     const pca = new PCA(pcaInput, {scale: false, center: true});
     pcaOutput = pca.predict(pcaInput);
+    for (let i = 0; i < pcaOutput.length; i++) {
+      for (let j = 0; j < pcaOutput[0].length; j++) {
+        pcaOutput[i][j] = (-pcaOutput[i][j]);
+      }
+    }
     theVariance = pca.getExplainedVariance();
     draw();
   }
@@ -48,7 +52,7 @@ function controller () {
     const num = $ctrl.dims;
     const chart = new PCAChart()
       .width((1100 / num) - 50)
-      .height((550 / num) - 25 - (50 / num))
+      .height((550 / num) - 50)
       .variance(theVariance)
       .color(d => color(d[$ctrl.meta])); // (of 1) width:800, height:400
 

@@ -1,6 +1,6 @@
 {
 	"name": "Series GSE5325",
-	"title": "Application of Principal Component Analysis to Genetics",
+	"title": "Example of Principal Component Analysis",
 	"resources": [
 		"./GSE5325.matrix",
 		"./GSE5325.tsv"
